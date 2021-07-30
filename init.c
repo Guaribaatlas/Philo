@@ -21,11 +21,13 @@ int		mutex_init(t_board *board)
 	i = -1;
 	while (++i < board->amount)
 		pthread_mutex_init(board->fork[i], NULL);
+	return (SUCCES);
 }
 
 int		init_philo(t_board *board)
 {
 	int i;
+
 	i = -1;
 	gettimeofday(&board->timeval, NULL);
 	board->dead_test = 0;
@@ -35,8 +37,7 @@ int		init_philo(t_board *board)
 	while (++i < board->amount)
 	{
 		board->philo[i].global = board;
-		board->philo[i]
-		board->philo[i].is_dead = 0;
+		board->philo[i].nb_eat = 0;
 		board->philo[i].rfork = i;
 		if (i == 0)
 			philo[i].lfork = board->amount - 1;

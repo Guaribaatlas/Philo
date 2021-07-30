@@ -1,72 +1,52 @@
 #include "philo_one.h"
 
-void	fct_write(t_philo *philo, int action)
+
+void	write_it(t_philo *philo, int wich)
 {
 	t_timeval tmp;
+	int tmp_time;
 
 	gettimeofday(&tmp, NULL);
-	printf("[%i] %i ", (tmp.tv_usec - philo->global->timeval.tv_usec),
-		   philo->order);
-	if (action == EAT)
-	{
-
-		printf("is eating\n");
-	}
-	if (action == THINK)
-	{
-		printf("is thinking\n");
-	}
-	if (action == SLEEP)
-	{
-		printf("is sleeping\n");
-	}
-	if (action == DIED)
-	{
-		printf("died\n");
-	}
+	time_tmp = tmp.tv_usec - philo->global->timeval.tv_usec;
+	if (wich == 1)
+		printf("[%i] %i has taken a fork\n", time_tmp, philo->order);
+	if (wich == 2)
+		printf("[%i] %i is eating\n", philo->last_eat, philo->order);
+	if (wich == 3)
+		printf("[%i] %i is sleeping", time_tmp, philo->order);
+	if (wich == 4)
+		printf("[%i] %i is thinking", time_tmp, philo->order);
+	if (wich == 5)
+		printf("[%i] %i died", time_tmp, philo->order);
 
 }
 
 void	philo_eat(t_philo *philo)
 {
-	t_timeval tmp;
-	int		time_tmp;
-
 	pthread_mutex_lock(philo->global->fork[philo->lfork]);
-	gettimeofday(&tmp, NULL);
-	time_tmp = tmp.tv_usec - philo->global->timeval.tv_usec;
-	printf("[%i] %i has taken a fork\n", time_tmp, philo->order);
+	write_it(philo, 1);
 	pthread_mutex_lock(philo->global->fork[philo->rfork];
-	printf("[%i] %i has taken a fork\n", time_tmp, philo->order);
-	gettimeofday(&tmp, NULL);
-	philo->last_eat = tmp.tv_usec - philo->global->timeval.tv_usec;
-	printf("[%i] %i is eating\n", philo->last_eat, philo->order);
+	write_it(philo, 1);
+	write_it(philo, 2);
 	usleep(philo->global->tt_eat);
 	pthread_mutex_unlock(philo->global->fork[philo->lfork]);
 	pthread_mutex_unlock(philo->global->fork[philo->rfork];
-	return (0);
 }
 
 void	philo_else(t_philo *philo)
 {
-	int		time_tmp;
-	t_timeval tmp;
 
-	gettimeofday(&tmp, NULL);
-	time_tmp = tmp.tv_usec - philo->global->timeval.tv_usec;
-	printf("[%i] %i is sleeping", time_tmp, philo->order);
+	write_it(philo, 3);
 	usleep(philo->global->tt_sleep);
-	gettimeofday(&tmp, NULL);
-	time_tmp = tmp.tv_usec - philo->global->timeval.tv_usec;
-	printf("[%i] %i is thinking", time_tmp, philo->order);
+	write_it(philo, 4);
 	usleep(philo->global->tt_think);
 }
 
 void	routine(t_philo *philo)
 {
-	if (philo->global->nb_eat != 0)
+	if (philo->nb_eat != 0)
 	{
-		while (philo->global->nb_finish != philo->global->amount)
+		while (philo->nb_eat < philo->global->nb_eat)
 		{
 			philo_eat(philo);
 			philo_else(philo);
@@ -76,6 +56,8 @@ void	routine(t_philo *philo)
 	{
 		while (1)
 		{
+			philo_eat(philo);
+			philo_else(philo);
 			if (philo->global->dead_test)
 				break ;
 		}

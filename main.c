@@ -9,6 +9,8 @@ int		parse_arg(t_board *board, char **arv, int arc)
 	board->tt_die = ft_atoi(arv[2]);
 	board->tt_eat = ft_atoi(arv[3]);
 	board->tt_slp = ft_atoi(arv[4]);
+	if (arc == 6)
+		board->nb_eat = ft_atoi(arv[5]);
 	return(SUCCESS);
 }
 
@@ -20,8 +22,8 @@ int		start_thread(t_board *board)
 	i = 0;
 	while (i < board->amount)
 	{
-		tmp = (void*)board->phil[i];
-		if (pthread_create(&board->tab_th[i], &routine, tmp) == ERROR)
+		if (pthread_create(&board->tab_th[i], &routine, (void*)
+		&board->phil[i]) == ERROR)
 			return(ERROR);
 		pthread_detach(&board->tab_th[i]);
 		usleep(100);
